@@ -223,7 +223,7 @@ export default function FlappyPlaneGame() {
       collision: "تێکدان:",
       collisionText: "پایپ یان زەوی بڵاو بکەیت، یاری کۆتایی دێت.",
       madeByTitle: "دروست کراوە",
-      madeByPrefix: "دروست کراوە لە لاین قوتابی ",
+      madeByPrefix: "دروست کراوە لە لاین ",
       camera: "کامێرا",
       cameraError: "هەڵەی کامێرا",
       restartCamera: "دووبارە دەستپێکردنەوەی کامێرا",
@@ -267,7 +267,7 @@ export default function FlappyPlaneGame() {
       collision: "Collision:",
       collisionText: "touch pipe or ground to end.",
       madeByTitle: "Made by",
-      madeByPrefix: "Made by student ",
+      madeByPrefix: "Made by ",
       camera: "Camera",
       cameraError: "Camera error",
       restartCamera: "Restart camera",
@@ -730,13 +730,17 @@ export default function FlappyPlaneGame() {
               <div className="text-xs font-semibold text-foreground">{t.madeByTitle}</div>
               <p className="mt-1 text-xs text-muted-foreground">
                 {t.madeByPrefix}
+                <span className="font-semibold text-foreground">محمد سلیمان احمد</span>
+                <span className="text-muted-foreground"> </span>
+                <span className="font-semibold text-foreground">عبدالقادر طارق کریم</span>
+                <span className="text-muted-foreground"> </span>
                 <a
                   href="https://www.instagram.com/hama_linux/"
                   target="_blank"
                   rel="noreferrer"
                   className="font-semibold text-primary underline underline-offset-2"
                 >
-                  محمد سلیمان احمد
+                  ابراهیم حسین
                 </a>
               </p>
             </div>
