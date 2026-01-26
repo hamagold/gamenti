@@ -47,6 +47,12 @@ All colors MUST be HSL.
     --game-pipe-2: 150 60% 46%;
     --game-danger: 0 78% 52%;
 
+    /* Kurdistan flag tokens (HSL) */
+    --flag-red: 350 78% 50%;
+    --flag-white: 0 0% 100%;
+    --flag-green: 140 58% 38%;
+    --flag-sun: 45 95% 55%;
+
     /* Effects */
     --shadow-soft: 0 12px 30px -18px hsl(222 45% 12% / 0.35);
     --shadow-pop: 0 18px 45px -24px hsl(var(--primary) / 0.45);
@@ -104,6 +110,11 @@ All colors MUST be HSL.
     --game-pipe: 140 48% 32%;
     --game-pipe-2: 150 46% 38%;
     --game-danger: 0 78% 55%;
+
+    --flag-red: 350 78% 54%;
+    --flag-white: 0 0% 100%;
+    --flag-green: 140 52% 36%;
+    --flag-sun: 45 95% 58%;
 
     --shadow-soft: 0 18px 45px -28px hsl(0 0% 0% / 0.55);
     --shadow-pop: 0 20px 60px -32px hsl(var(--primary) / 0.35);
