@@ -4,6 +4,8 @@ import KurdistanBanner from "./KurdistanBanner";
 
 type GameStatus = "ready" | "playing" | "gameover";
 
+type Difficulty = "easy" | "normal" | "hard";
+
 type Obstacle = {
   id: string;
   x: number;
@@ -34,6 +36,7 @@ export default function FlappyPlaneGame() {
   const tracking = useHandY(videoRef, { point: "wrist", selfieMode: true, smoothing: 0.22 });
 
   const [status, setStatus] = useState<GameStatus>("ready");
+  const [difficulty, setDifficulty] = useState<Difficulty>("normal");
   const [score, setScore] = useState(0);
   const [best, setBest] = useState<number>(() => {
     try {
@@ -55,20 +58,24 @@ export default function FlappyPlaneGame() {
   const passedRef = useRef<Set<string>>(new Set());
   const liveScoreRef = useRef(0);
 
-  const settings = useMemo(
-    () => ({
+  const settings = useMemo(() => {
+    const base = {
       groundH: 76,
       planeW: 52,
       planeH: 30,
-      obstacleSpeed: 260, // px/sec
-      spawnEvery: 1.35, // seconds
       obstacleW: 84,
-      gapH: 160,
       paddingTop: 18,
       paddingBottom: 18,
-    }),
-    []
-  );
+    };
+
+    const presets: Record<Difficulty, { obstacleSpeed: number; spawnEvery: number; gapH: number }> = {
+      easy: { obstacleSpeed: 210, spawnEvery: 1.6, gapH: 190 },
+      normal: { obstacleSpeed: 260, spawnEvery: 1.35, gapH: 160 },
+      hard: { obstacleSpeed: 320, spawnEvery: 1.15, gapH: 135 },
+    };
+
+    return { ...base, ...presets[difficulty] };
+  }, [difficulty]);
 
   // Observe playfield size for accurate pixel mapping
   useEffect(() => {
@@ -260,7 +267,30 @@ export default function FlappyPlaneGame() {
             </p>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="mr-1 flex items-center gap-1 rounded-xl border bg-card px-2 py-2 shadow-soft">
+              <DiffButton
+                active={difficulty === "easy"}
+                disabled={status === "playing"}
+                onClick={() => setDifficulty("easy")}
+              >
+                Easy
+              </DiffButton>
+              <DiffButton
+                active={difficulty === "normal"}
+                disabled={status === "playing"}
+                onClick={() => setDifficulty("normal")}
+              >
+                Normal
+              </DiffButton>
+              <DiffButton
+                active={difficulty === "hard"}
+                disabled={status === "playing"}
+                onClick={() => setDifficulty("hard")}
+              >
+                Hard
+              </DiffButton>
+            </div>
             <div className="rounded-lg border bg-card px-3 py-2 shadow-soft">
               <div className="text-xs text-muted-foreground">Score</div>
               <div className="text-lg font-semibold tabular-nums leading-none">{score}</div>
@@ -417,6 +447,36 @@ export default function FlappyPlaneGame() {
         </div>
       </div>
     </div>
+  );
+}
+
+function DiffButton({
+  active,
+  disabled,
+  onClick,
+  children,
+}: {
+  active: boolean;
+  disabled?: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      disabled={disabled}
+      onClick={onClick}
+      className={
+        "rounded-lg px-3 py-1 text-xs font-semibold transition-transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 " +
+        (active
+          ? "bg-primary text-primary-foreground shadow-soft"
+          : "bg-secondary/40 text-foreground hover:scale-[1.02] active:scale-[0.99]") +
+        (disabled ? " opacity-60" : "")
+      }
+      title={disabled ? "Stop the run to change difficulty" : ""}
+    >
+      {children}
+    </button>
   );
 }
 
