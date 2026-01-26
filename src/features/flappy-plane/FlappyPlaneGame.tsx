@@ -1,10 +1,23 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useHandY } from "./useHandY";
 import KurdistanBanner from "./KurdistanBanner";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 type GameStatus = "ready" | "playing" | "gameover";
 
 type Difficulty = "easy" | "normal" | "hard";
+
+type Lang = "ku" | "en";
 
 type ScoreEntry = {
   name: string;
@@ -75,6 +88,14 @@ export default function FlappyPlaneGame() {
 
   const [status, setStatus] = useState<GameStatus>("ready");
   const [difficulty, setDifficulty] = useState<Difficulty>("normal");
+  const [lang, setLang] = useState<Lang>(() => {
+    try {
+      const v = localStorage.getItem("flappy_plane_lang");
+      return v === "en" || v === "ku" ? v : "ku";
+    } catch {
+      return "ku";
+    }
+  });
   const [playerName, setPlayerName] = useState<string>(() => {
     try {
       return localStorage.getItem("flappy_plane_player_name") ?? "";
@@ -160,6 +181,115 @@ export default function FlappyPlaneGame() {
       // ignore
     }
   }, [playerName]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem("flappy_plane_lang", lang);
+    } catch {
+      // ignore
+    }
+  }, [lang]);
+
+  const t = useMemo(() => {
+    const ku = {
+      title: "فڵاپی فڕۆکە — کۆنترۆڵ بە دەست",
+      subtitle: "دەستت بەرز/نزم بکە لە پێش کامێرا. فڕۆکەکە بە وردی شوێنی دەستت دەگرێت — بەبێ گڕاڤیتی.",
+      easy: "ئاسان",
+      normal: "ئاسایی",
+      hard: "سەخت",
+      score: "سکۆر",
+      best: "باشترین",
+      showHand: "دەستیەک پیشان بدە بۆ کۆنترۆڵ",
+      readyTitle: "ئامادەی بۆ فڕین؟",
+      crashedTitle: "کێشایەوە!",
+      readyDesc: "ڕێگە بدە بە کامێرا، پاشان دەستت بەرز/نزم بکە. دووربە لە پایپ و مەکەوە سەر زەوی.",
+      fullName: "ناوی تەواو",
+      namePlaceholder: "مثال: ئەحمد محەمەد",
+      nameRequired: "پێویستە پێش یاری کردن ناوت بنوسیت.",
+      start: "دەستپێکردن",
+      tryAgain: "دووبارە هەوڵ بدە",
+      reset: "ڕیسێت",
+      tip: "ئامۆژگاری: قۆڵ/دەستت لە ناو فریمدا بهێڵە. بەرز=سەرەوە، نزم=خوارەوە.",
+      leaderboard: "بۆردی سکۆر",
+      noScores: "هێشتا هیچ سکۆرێک نییە — تۆ یەکەم بە!",
+      clear: "سڕینەوە",
+      howItWorks: "چۆن کار دەکات",
+      input: "هاتووچۆ:",
+      inputText: "MediaPipe دەستت دەدۆزێتەوە.",
+      mapping: "گەڕانەوە:",
+      mappingText: "wrist Y → plane Y (1:1).",
+      physics: "فیزیا:",
+      physicsText: "گڕاڤیتی نییە — کۆنترۆڵی ورد.",
+      collision: "تێکدان:",
+      collisionText: "پایپ یان زەوی بڵاو بکەیت، یاری کۆتایی دێت.",
+      madeByTitle: "دروست کراوە",
+      madeByPrefix: "دروست کراوە لە لاین قوتابی ",
+      camera: "کامێرا",
+      cameraError: "هەڵەی کامێرا",
+      restartCamera: "دووبارە دەستپێکردنەوەی کامێرا",
+      coverPreview: "ئەگەر دەتەوێت، دەتوانیت ئەم پیشاندانییە داپۆشیت — track کردن هێشتا کار دەکات.",
+      confirmClearTitle: "سڕینەوەی بۆردی سکۆر؟",
+      confirmClearDesc: "هەموو سکۆرەکان لەم ئامێرەدا دەسڕێنەوە (local). ئەمە گەڕانەوە نییە.",
+      cancel: "هەڵوەشاندنەوە",
+      confirm: "بەڵێ، بسڕەوە",
+      difficultyHint: "Stop the run to change difficulty",
+    };
+
+    const en = {
+      title: "Flappy Plane — Hand Control",
+      subtitle: "Move your hand up/down in front of the camera. The plane follows precisely — no gravity.",
+      easy: "Easy",
+      normal: "Normal",
+      hard: "Hard",
+      score: "Score",
+      best: "Best",
+      showHand: "Show one hand to control",
+      readyTitle: "Ready to fly?",
+      crashedTitle: "Crashed!",
+      readyDesc: "Allow camera access, then move your hand up/down. Avoid the pipes and don’t hit the ground.",
+      fullName: "Full name",
+      namePlaceholder: "Example: Ahmed Mohammed",
+      nameRequired: "Please enter your name before starting.",
+      start: "Start",
+      tryAgain: "Try again",
+      reset: "Reset",
+      tip: "Tip: Keep your wrist/palm in frame. Up = climb, down = dive.",
+      leaderboard: "Leaderboard",
+      noScores: "No scores yet — be the first!",
+      clear: "Clear",
+      howItWorks: "How it works",
+      input: "Input:",
+      inputText: "MediaPipe tracks your hand.",
+      mapping: "Mapping:",
+      mappingText: "wrist Y → plane Y (1:1).",
+      physics: "Physics:",
+      physicsText: "no gravity — precise control.",
+      collision: "Collision:",
+      collisionText: "touch pipe or ground to end.",
+      madeByTitle: "Made by",
+      madeByPrefix: "Made by student ",
+      camera: "Camera",
+      cameraError: "Camera error",
+      restartCamera: "Restart camera",
+      coverPreview: "If you prefer, you can cover this preview — tracking still works.",
+      confirmClearTitle: "Clear leaderboard?",
+      confirmClearDesc: "This will remove all saved scores on this device (local). This can’t be undone.",
+      cancel: "Cancel",
+      confirm: "Yes, clear",
+      difficultyHint: "Stop the run to change difficulty",
+    };
+
+    return lang === "ku" ? ku : en;
+  }, [lang]);
+
+  const clearLeaderboard = () => {
+    setScores([]);
+    try {
+      localStorage.removeItem(SCORES_KEY);
+    } catch {
+      // ignore
+    }
+  };
 
   // Signature moment: background parallax follows plane Y
   useEffect(() => {
@@ -341,43 +471,57 @@ export default function FlappyPlaneGame() {
         <header className="mb-4 flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
           <div>
             <h1 dir="rtl" className="text-balance text-3xl font-semibold tracking-tight md:text-4xl">
-              فڵاپی فڕۆکە — کۆنترۆڵ بە دەست
+              {t.title}
             </h1>
             <p dir="rtl" className="text-sm text-muted-foreground md:text-base">
-              دەستت بەرز/نزم بکە لە پێش کامێرا. فڕۆکەکە بە وردی شوێنی دەستت دەگرێت — بەبێ گڕاڤیتی.
+              {t.subtitle}
             </p>
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
+            <div className="flex items-center gap-1 rounded-xl border bg-card px-2 py-2 shadow-soft">
+              <button
+                type="button"
+                onClick={() => setLang((v) => (v === "ku" ? "en" : "ku"))}
+                className="rounded-lg bg-secondary/40 px-3 py-1 text-xs font-semibold text-foreground shadow-soft transition-transform hover:scale-[1.02] active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                aria-label="Toggle language"
+                title="KU / EN"
+              >
+                {lang.toUpperCase()}
+              </button>
+            </div>
             <div className="mr-1 flex items-center gap-1 rounded-xl border bg-card px-2 py-2 shadow-soft">
               <DiffButton
                 active={difficulty === "easy"}
                 disabled={status === "playing"}
                 onClick={() => setDifficulty("easy")}
+                title={status === "playing" ? t.difficultyHint : ""}
               >
-                Easy
+                {t.easy}
               </DiffButton>
               <DiffButton
                 active={difficulty === "normal"}
                 disabled={status === "playing"}
                 onClick={() => setDifficulty("normal")}
+                title={status === "playing" ? t.difficultyHint : ""}
               >
-                Normal
+                {t.normal}
               </DiffButton>
               <DiffButton
                 active={difficulty === "hard"}
                 disabled={status === "playing"}
                 onClick={() => setDifficulty("hard")}
+                title={status === "playing" ? t.difficultyHint : ""}
               >
-                Hard
+                {t.hard}
               </DiffButton>
             </div>
             <div className="rounded-lg border bg-card px-3 py-2 shadow-soft">
-              <div className="text-xs text-muted-foreground">Score</div>
+              <div className="text-xs text-muted-foreground">{t.score}</div>
               <div className="text-lg font-semibold tabular-nums leading-none">{score}</div>
             </div>
             <div className="rounded-lg border bg-card px-3 py-2 shadow-soft">
-              <div className="text-xs text-muted-foreground">Best</div>
+              <div className="text-xs text-muted-foreground">{t.best}</div>
               <div className="text-lg font-semibold tabular-nums leading-none">{best}</div>
             </div>
           </div>
@@ -454,7 +598,7 @@ export default function FlappyPlaneGame() {
               <StatusPill tracking={tracking} />
               {status !== "playing" ? null : tracking.status !== "running" ? (
                 <div className="rounded-full border bg-card/80 px-3 py-1 text-xs text-muted-foreground backdrop-blur">
-                  Show one hand to control
+                  {t.showHand}
                 </div>
               ) : null}
             </div>
@@ -463,22 +607,22 @@ export default function FlappyPlaneGame() {
               <div className="absolute inset-0 grid place-items-center p-6">
                 <div className="w-full max-w-md rounded-2xl border bg-card/80 p-5 text-center shadow-pop backdrop-blur">
                   <div className="mb-2 text-sm font-semibold">
-                    {status === "ready" ? "Ready to fly?" : "Crashed!"}
+                    {status === "ready" ? t.readyTitle : t.crashedTitle}
                   </div>
                   <p className="mb-4 text-sm text-muted-foreground">
-                    Allow camera access, then move your hand up/down. Avoid the pipes and don’t hit the ground.
+                    {t.readyDesc}
                   </p>
 
                   <div dir="rtl" className="mb-4 text-right">
-                    <label className="mb-1 block text-xs font-semibold text-foreground">ناوی تەواو</label>
+                    <label className="mb-1 block text-xs font-semibold text-foreground">{t.fullName}</label>
                     <input
                       value={playerName}
                       onChange={(e) => setPlayerName(e.target.value)}
-                      placeholder="مثال: ئەحمد محەمەد"
+                      placeholder={t.namePlaceholder}
                       className="w-full rounded-xl border bg-card px-3 py-2 text-sm text-foreground shadow-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                     />
                     {!playerName.trim() ? (
-                      <div className="mt-1 text-xs text-muted-foreground">پێویستە پێش یاری کردن ناوت بنوسیت.</div>
+                      <div className="mt-1 text-xs text-muted-foreground">{t.nameRequired}</div>
                     ) : null}
                   </div>
 
@@ -494,18 +638,18 @@ export default function FlappyPlaneGame() {
                           : "bg-secondary/60 text-muted-foreground opacity-70")
                       }
                     >
-                      {status === "ready" ? "Start" : "Try again"}
+                      {status === "ready" ? t.start : t.tryAgain}
                     </button>
                     <button
                       type="button"
                       onClick={reset}
                       className="inline-flex items-center justify-center rounded-xl border bg-card px-4 py-2 text-sm font-semibold text-foreground shadow-soft transition-transform hover:scale-[1.02] active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                     >
-                      Reset
+                      {t.reset}
                     </button>
                   </div>
                   <div className="mt-3 text-xs text-muted-foreground">
-                    Tip: Keep your wrist/palm in frame. Up = climb, down = dive.
+                    {t.tip}
                   </div>
                 </div>
               </div>
@@ -514,10 +658,39 @@ export default function FlappyPlaneGame() {
 
           {/* Side panel */}
           <aside className="rounded-2xl border bg-card p-4 shadow-soft">
-            <h2 className="text-sm font-semibold">Leaderboard</h2>
+            <div className="flex items-center justify-between gap-2">
+              <h2 className="text-sm font-semibold">{t.leaderboard}</h2>
+
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <button
+                    type="button"
+                    disabled={scores.length === 0}
+                    className={
+                      "rounded-lg border px-2.5 py-1 text-xs font-semibold shadow-soft transition-transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 " +
+                      (scores.length === 0
+                        ? "bg-secondary/30 text-muted-foreground opacity-60"
+                        : "bg-card text-foreground hover:scale-[1.02] active:scale-[0.99]")
+                    }
+                  >
+                    {t.clear}
+                  </button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>{t.confirmClearTitle}</AlertDialogTitle>
+                    <AlertDialogDescription>{t.confirmClearDesc}</AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>{t.cancel}</AlertDialogCancel>
+                    <AlertDialogAction onClick={clearLeaderboard}>{t.confirm}</AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </div>
             <div className="mt-2 rounded-xl border bg-secondary/20 p-3">
               {scores.length === 0 ? (
-                <div className="text-sm text-muted-foreground">No scores yet — be the first!</div>
+                <div className="text-sm text-muted-foreground">{t.noScores}</div>
               ) : (
                 <ol className="space-y-2">
                   {scores.slice(0, 8).map((s, idx) => (
@@ -537,26 +710,26 @@ export default function FlappyPlaneGame() {
               )}
             </div>
 
-            <h2 className="mt-4 text-sm font-semibold">How it works</h2>
+            <h2 className="mt-4 text-sm font-semibold">{t.howItWorks}</h2>
             <ul className="mt-2 space-y-2 text-sm text-muted-foreground">
               <li>
-                <span className="font-medium text-foreground">Input:</span> MediaPipe tracks your hand.
+                <span className="font-medium text-foreground">{t.input}</span> {t.inputText}
               </li>
               <li>
-                <span className="font-medium text-foreground">Mapping:</span> wrist Y → plane Y (1:1).
+                <span className="font-medium text-foreground">{t.mapping}</span> {t.mappingText}
               </li>
               <li>
-                <span className="font-medium text-foreground">Physics:</span> no gravity — precise control.
+                <span className="font-medium text-foreground">{t.physics}</span> {t.physicsText}
               </li>
               <li>
-                <span className="font-medium text-foreground">Collision:</span> touch pipe or ground to end.
+                <span className="font-medium text-foreground">{t.collision}</span> {t.collisionText}
               </li>
             </ul>
 
             <div dir="rtl" className="mt-4 rounded-xl border bg-secondary/40 p-3">
-              <div className="text-xs font-semibold text-foreground">دروست کراوە</div>
+              <div className="text-xs font-semibold text-foreground">{t.madeByTitle}</div>
               <p className="mt-1 text-xs text-muted-foreground">
-                دروست کراوە لە لاین قوتابی{" "}
+                {t.madeByPrefix}
                 <a
                   href="https://www.instagram.com/hama_linux/"
                   target="_blank"
@@ -570,17 +743,17 @@ export default function FlappyPlaneGame() {
 
             {/* Hidden video element used by MediaPipe */}
             <div className="mt-4">
-              <div className="text-xs font-semibold text-foreground">Camera</div>
+              <div className="text-xs font-semibold text-foreground">{t.camera}</div>
               {tracking.status === "error" ? (
                 <div className="mt-2 rounded-xl border bg-destructive/10 p-3 text-xs">
-                  <div className="font-semibold text-foreground">Camera error</div>
+                  <div className="font-semibold text-foreground">{t.cameraError}</div>
                   <div className="mt-1 text-muted-foreground">{tracking.message}</div>
                   <button
                     type="button"
                     onClick={() => setRestartToken((v) => v + 1)}
                     className="mt-2 inline-flex items-center justify-center rounded-lg bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground shadow-soft transition-transform hover:scale-[1.02] active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                   >
-                    Restart camera
+                    {t.restartCamera}
                   </button>
                 </div>
               ) : null}
@@ -588,7 +761,7 @@ export default function FlappyPlaneGame() {
                 <video ref={videoRef} className="h-auto w-full" autoPlay playsInline muted />
               </div>
               <div className="mt-2 text-xs text-muted-foreground">
-                If you prefer, you can cover this preview — tracking still works.
+                {t.coverPreview}
               </div>
             </div>
           </aside>
@@ -649,11 +822,13 @@ function DiffButton({
   active,
   disabled,
   onClick,
+  title,
   children,
 }: {
   active: boolean;
   disabled?: boolean;
   onClick: () => void;
+  title?: string;
   children: React.ReactNode;
 }) {
   return (
@@ -668,7 +843,7 @@ function DiffButton({
           : "bg-secondary/40 text-foreground hover:scale-[1.02] active:scale-[0.99]") +
         (disabled ? " opacity-60" : "")
       }
-      title={disabled ? "Stop the run to change difficulty" : ""}
+      title={title ?? ""}
     >
       {children}
     </button>
