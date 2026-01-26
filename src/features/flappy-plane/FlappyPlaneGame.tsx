@@ -179,12 +179,20 @@ export default function FlappyPlaneGame() {
       spawnAccRef.current += dt;
       if (spawnAccRef.current >= settings.spawnEvery) {
         spawnAccRef.current = 0;
+
+        // Dynamic difficulty (Hard): reduce gap as score increases, down to a safe minimum.
+        const baseGapH = settings.gapH;
+        const dynamicGapH =
+          difficulty === "hard"
+            ? clamp(baseGapH - liveScoreRef.current * 2.2, 108, baseGapH)
+            : baseGapH;
+
         const margin = settings.paddingTop;
-        const maxY = Math.max(margin, groundTop - settings.gapH - settings.paddingBottom);
+        const maxY = Math.max(margin, groundTop - dynamicGapH - settings.paddingBottom);
         const gapY = clamp(
           margin + Math.random() * (maxY - margin),
           margin,
-          groundTop - settings.gapH - settings.paddingBottom
+          groundTop - dynamicGapH - settings.paddingBottom
         );
 
         const next: Obstacle = {
@@ -192,7 +200,7 @@ export default function FlappyPlaneGame() {
           x: W + 40,
           width: settings.obstacleW,
           gapY,
-          gapH: settings.gapH,
+          gapH: dynamicGapH,
         };
 
         const updated = [...obstaclesRef.current, next];
