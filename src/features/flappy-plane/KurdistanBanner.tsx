@@ -50,8 +50,8 @@ function GameNameBadge() {
       <TowerMark side="left" />
       <KurdistanFlagMark size="sm" />
       <div className="relative">
-        <div className="text-sm font-extrabold tracking-tight md:text-base">Flappy Plane</div>
-        <div className="absolute -bottom-1 left-0 right-0 h-1 rounded-full bg-primary/30" />
+        <div className="text-sm font-extrabold tracking-tight text-flag-green md:text-base">Flappy Plane</div>
+        <div className="absolute -bottom-1 left-0 right-0 h-1 rounded-full bg-flag-green/35" />
       </div>
       <TowerMark side="right" />
     </div>
