@@ -6,7 +6,10 @@ export default function KurdistanBanner({ instituteName = "پەیمانگای ت
   return (
     <div className="mb-4 flex flex-col gap-3 rounded-2xl border bg-card/70 p-4 shadow-soft backdrop-blur md:flex-row md:items-center md:justify-between">
       <div className="flex items-center gap-3">
-        <KurdistanFlagMark />
+        <div className="flex items-center gap-2">
+          <KurdistanFlagMark />
+          <InstituteLogoMark />
+        </div>
         <div className="leading-tight">
           <div className="text-sm font-semibold tracking-tight">Flappy Plane</div>
           <div dir="rtl" className="text-base font-semibold">
@@ -31,6 +34,49 @@ function KurdistanFlagMark() {
       <div className="absolute inset-x-0 top-1/3 h-1/3 bg-flag-white" />
       <div className="absolute inset-x-0 bottom-0 h-1/3 bg-flag-green" />
       <SunEmblem />
+    </div>
+  );
+}
+
+function InstituteLogoMark() {
+  // Simple, token-based mark inspired by the NTI emblem (gear ring + pen nib).
+  // Uses only CSS variables/tokens so it matches the theme.
+  return (
+    <div className="shadow-soft relative grid h-10 w-10 place-items-center overflow-hidden rounded-xl border bg-card">
+      <svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true">
+        {/* gear ring */}
+        <g fill="none" stroke="hsl(var(--primary))" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="15" cy="15" r="10.5" opacity="0.95" />
+          {Array.from({ length: 10 }).map((_, i) => {
+            const a = (i * 360) / 10;
+            return (
+              <path
+                key={i}
+                d="M15 1.6 V4.0"
+                transform={`rotate(${a} 15 15)`}
+                opacity="0.8"
+              />
+            );
+          })}
+        </g>
+
+        {/* inner circle */}
+        <circle cx="15" cy="15" r="6.2" fill="hsl(var(--secondary))" stroke="hsl(var(--border))" strokeWidth="1" />
+
+        {/* pen nib */}
+        <path
+          d="M15 8.5 L19.2 14.2 L15 22 L10.8 14.2 Z"
+          fill="hsl(var(--accent))"
+          stroke="hsl(var(--foreground) / 0.15)"
+          strokeWidth="1"
+        />
+        <path
+          d="M15 12.2 L16.4 14.6 L15 17.2 L13.6 14.6 Z"
+          fill="hsl(var(--card))"
+          opacity="0.9"
+        />
+        <circle cx="15" cy="18.2" r="0.9" fill="hsl(var(--foreground) / 0.35)" />
+      </svg>
     </div>
   );
 }
