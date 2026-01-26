@@ -553,10 +553,18 @@ export default function FlappyPlaneGame() {
               </li>
             </ul>
 
-            <div className="mt-4 rounded-xl border bg-secondary/40 p-3">
-              <div className="text-xs font-semibold text-foreground">Privacy note</div>
+            <div dir="rtl" className="mt-4 rounded-xl border bg-secondary/40 p-3">
+              <div className="text-xs font-semibold text-foreground">دروست کراوە</div>
               <p className="mt-1 text-xs text-muted-foreground">
-                The camera feed is processed locally in your browser for hand tracking.
+                دروست کراوە لە لاین قوتابی{" "}
+                <a
+                  href="https://www.instagram.com/hama_linux/"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="font-semibold text-primary underline underline-offset-2"
+                >
+                  محمد سلیمان احمد
+                </a>
               </p>
             </div>
 
