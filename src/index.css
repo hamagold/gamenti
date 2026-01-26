@@ -138,6 +138,20 @@ All colors MUST be HSL.
       linear-gradient(180deg, hsl(var(--sky)), hsl(var(--background)) 70%);
   }
 
+  .bg-kurdistan-sky {
+    /* Flag-inspired sky: soft stripes + subtle sun glow. */
+    background-image:
+      radial-gradient(520px 520px at 52% 45%, hsl(var(--flag-sun) / 0.35), transparent 60%),
+      radial-gradient(900px 420px at 20% 18%, hsl(var(--flag-white) / 0.65), transparent 60%),
+      linear-gradient(
+        180deg,
+        hsl(var(--flag-red) / 0.22) 0%,
+        hsl(var(--flag-white) / 0.28) 40%,
+        hsl(var(--flag-green) / 0.22) 78%,
+        hsl(var(--background)) 100%
+      );
+  }
+
   .noise-overlay {
     position: relative;
   }
