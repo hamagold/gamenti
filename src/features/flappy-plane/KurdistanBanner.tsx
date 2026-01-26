@@ -77,27 +77,65 @@ function TowerMark({ side }: { side: "left" | "right" }) {
   return (
     <svg
       className={`h-7 w-7 ${flip}`}
-      viewBox="0 0 24 24"
+      viewBox="0 0 28 28"
       aria-hidden="true"
     >
-      {/* cartoon tower */}
+      <defs>
+        <linearGradient id="tShine" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stopColor="hsl(var(--card) / 0.9)" />
+          <stop offset="0.5" stopColor="hsl(var(--card) / 0.05)" />
+          <stop offset="1" stopColor="hsl(var(--card) / 0)" />
+        </linearGradient>
+        <clipPath id="towerClip">
+          <path d="M6 24V11.8c0-.8.4-1.6 1.1-2.1L10.2 7.5V5.4c0-.6.5-1.1 1.1-1.1h5.4c.6 0 1.1.5 1.1 1.1v2.1l3.1 2.2c.7.5 1.1 1.3 1.1 2.1V24H6Z" />
+        </clipPath>
+      </defs>
+
+      {/* Outer tower silhouette */}
       <path
-        d="M5 21V10.6c0-.7.3-1.4.9-1.8L9 6.7V4.8c0-.5.4-.9.9-.9h4.2c.5 0 .9.4.9.9v1.9l3.1 2.1c.6.4.9 1.1.9 1.8V21"
-        fill="hsl(var(--primary) / 0.15)"
-        stroke="hsl(var(--primary))"
-        strokeWidth="1.6"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M8 21v-4.2c0-.6.4-1 1-1h6c.6 0 1 .4 1 1V21"
-        fill="hsl(var(--accent) / 0.18)"
+        d="M6 24V11.8c0-.8.4-1.6 1.1-2.1L10.2 7.5V5.4c0-.6.5-1.1 1.1-1.1h5.4c.6 0 1.1.5 1.1 1.1v2.1l3.1 2.2c.7.5 1.1 1.3 1.1 2.1V24H6Z"
+        fill="hsl(var(--foreground) / 0.06)"
         stroke="hsl(var(--foreground) / 0.22)"
         strokeWidth="1.4"
         strokeLinejoin="round"
       />
-      {/* windows */}
-      <rect x="9" y="10" width="2.4" height="2.8" rx="0.6" fill="hsl(var(--accent))" opacity="0.55" />
-      <rect x="12.6" y="10" width="2.4" height="2.8" rx="0.6" fill="hsl(var(--accent))" opacity="0.55" />
+
+      {/* Kurdistan-flag stripes inside */}
+      <g clipPath="url(#towerClip)">
+        <rect x="5" y="4" width="18" height="20" fill="hsl(var(--flag-red))" />
+        <rect x="5" y="11" width="18" height="7" fill="hsl(var(--flag-white))" />
+        <rect x="5" y="18" width="18" height="8" fill="hsl(var(--flag-green))" />
+
+        {/* small sun emblem */}
+        <g transform="translate(14 15)">
+          {Array.from({ length: 12 }).map((_, i) => (
+            <rect
+              key={i}
+              x={-0.4}
+              y={-6.8}
+              width={0.8}
+              height={3.0}
+              rx={0.4}
+              transform={`rotate(${(i * 360) / 12})`}
+              fill="hsl(var(--flag-sun))"
+              opacity="0.95"
+            />
+          ))}
+          <circle r="3.1" fill="hsl(var(--flag-sun))" />
+        </g>
+
+        {/* shine */}
+        <rect x="5" y="4" width="18" height="20" fill="url(#tShine)" />
+      </g>
+
+      {/* base */}
+      <path
+        d="M9 24v-4.4c0-.7.6-1.3 1.3-1.3h7.4c.7 0 1.3.6 1.3 1.3V24"
+        fill="hsl(var(--secondary) / 0.35)"
+        stroke="hsl(var(--foreground) / 0.18)"
+        strokeWidth="1.2"
+        strokeLinejoin="round"
+      />
     </svg>
   );
 }
