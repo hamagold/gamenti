@@ -730,18 +730,21 @@ export default function FlappyPlaneGame() {
               <div className="text-xs font-semibold text-foreground">{t.madeByTitle}</div>
               <p className="mt-1 text-xs text-muted-foreground">
                 {t.madeByPrefix}
-                <span className="font-semibold text-foreground">محمد سلیمان احمد</span>
-                <span className="text-muted-foreground"> </span>
-                <span className="font-semibold text-foreground">عبدالقادر طارق کریم</span>
-                <span className="text-muted-foreground"> </span>
+                <span className="whitespace-nowrap">١ </span>
                 <a
                   href="https://www.instagram.com/hama_linux/"
                   target="_blank"
                   rel="noreferrer"
                   className="font-semibold text-primary underline underline-offset-2"
                 >
-                  ابراهیم حسین
+                  محمد سلیمان احمد
                 </a>
+                <span className="text-muted-foreground"> </span>
+                <span className="whitespace-nowrap">٢ </span>
+                <span className="font-semibold text-foreground">عبدالقادر طارق کریم</span>
+                <span className="text-muted-foreground"> </span>
+                <span className="whitespace-nowrap">٣ </span>
+                <span className="font-semibold text-foreground">ابراهیم حسین</span>
               </p>
             </div>
 
