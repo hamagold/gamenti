@@ -62,8 +62,9 @@ export default function FlappyPlaneGame() {
   const settings = useMemo(() => {
     const base = {
       groundH: 76,
-      planeW: 52,
-      planeH: 30,
+      // slightly larger plane for better feel/visibility
+      planeW: 62,
+      planeH: 36,
       obstacleW: 84,
       paddingTop: 18,
       paddingBottom: 18,
@@ -597,7 +598,7 @@ function PlaneSprite({ floating, reducedMotion }: { floating: boolean; reducedMo
   return (
     <div
       className={
-        "relative h-[30px] w-[52px] " + (floating && !reducedMotion ? "animate-floaty" : "")
+        "relative h-[36px] w-[62px] " + (floating && !reducedMotion ? "animate-floaty" : "")
       }
       style={{ filter: "drop-shadow(0 12px 18px hsl(var(--foreground) / 0.18))" }}
     >
@@ -612,13 +613,25 @@ function PlaneSprite({ floating, reducedMotion }: { floating: boolean; reducedMo
             <stop offset="0" stopColor="hsl(var(--primary))" />
             <stop offset="1" stopColor="hsl(var(--primary) / 0.65)" />
           </linearGradient>
+
+          {/* Fuselage clip for flag fill */}
+          <clipPath id="fuselageClip">
+            <path d="M9 18c-3.3 0-6-2-6-4.6C3 10.9 5.7 9 9 9h20c4.1 0 7.7 1.8 10.7 4.2l5.3 4.3c1.1.9.5 2.5-.9 2.5H29L14.8 21c-1.8-.6-3.7-1-5.8-1Z" />
+          </clipPath>
         </defs>
 
         {/* fuselage */}
+        <g clipPath="url(#fuselageClip)">
+          <rect x="0" y="0" width="52" height="10" fill="hsl(var(--flag-red))" opacity="0.9" />
+          <rect x="0" y="10" width="52" height="10" fill="hsl(var(--flag-white))" opacity="0.95" />
+          <rect x="0" y="20" width="52" height="10" fill="hsl(var(--flag-green))" opacity="0.9" />
+          <circle cx="28" cy="15" r="4.1" fill="hsl(var(--flag-sun))" opacity="0.75" />
+          <rect x="0" y="0" width="52" height="30" fill="url(#planeBody)" opacity="0.28" />
+        </g>
         <path
           d="M9 18c-3.3 0-6-2-6-4.6C3 10.9 5.7 9 9 9h20c4.1 0 7.7 1.8 10.7 4.2l5.3 4.3c1.1.9.5 2.5-.9 2.5H29L14.8 21c-1.8-.6-3.7-1-5.8-1Z"
-          fill="url(#planeBody)"
-          stroke="hsl(var(--foreground) / 0.22)"
+          fill="none"
+          stroke="hsl(var(--foreground) / 0.24)"
           strokeWidth="1.2"
           strokeLinejoin="round"
         />
@@ -670,12 +683,7 @@ function PlaneSprite({ floating, reducedMotion }: { floating: boolean; reducedMo
       </svg>
 
       {/* propeller (CSS animated) */}
-      <div
-        className={
-          "absolute right-[5px] top-[9px] h-[12px] w-[12px] rounded-full border bg-card shadow-soft " +
-          (reducedMotion ? "" : "")
-        }
-      >
+      <div className="absolute right-[6px] top-[10px] h-[12px] w-[12px] rounded-full border bg-card shadow-soft">
         <div
           className={
             "absolute left-1/2 top-1/2 h-[2px] w-[16px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-foreground/30 " +
@@ -685,7 +693,7 @@ function PlaneSprite({ floating, reducedMotion }: { floating: boolean; reducedMo
       </div>
 
       {/* Kurdistan flag mini-label on top */}
-      <div className="absolute left-[18px] top-[-6px] h-[10px] w-[20px] overflow-hidden rounded-md border bg-card shadow-soft">
+      <div className="absolute left-[22px] top-[-6px] h-[10px] w-[20px] overflow-hidden rounded-md border bg-card shadow-soft">
         <div className="absolute inset-x-0 top-0 h-1/3 bg-flag-red" />
         <div className="absolute inset-x-0 top-1/3 h-1/3 bg-flag-white" />
         <div className="absolute inset-x-0 bottom-0 h-1/3 bg-flag-green" />
