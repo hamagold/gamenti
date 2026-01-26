@@ -33,7 +33,8 @@ export default function FlappyPlaneGame() {
   const wrapRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  const tracking = useHandY(videoRef, { point: "wrist", selfieMode: true, smoothing: 0.22 });
+  const [restartToken, setRestartToken] = useState(0);
+  const tracking = useHandY(videoRef, { point: "wrist", selfieMode: true, smoothing: 0.22, restartToken });
 
   const [status, setStatus] = useState<GameStatus>("ready");
   const [difficulty, setDifficulty] = useState<Difficulty>("normal");
@@ -447,6 +448,19 @@ export default function FlappyPlaneGame() {
             {/* Hidden video element used by MediaPipe */}
             <div className="mt-4">
               <div className="text-xs font-semibold text-foreground">Camera</div>
+              {tracking.status === "error" ? (
+                <div className="mt-2 rounded-xl border bg-destructive/10 p-3 text-xs">
+                  <div className="font-semibold text-foreground">Camera error</div>
+                  <div className="mt-1 text-muted-foreground">{tracking.message}</div>
+                  <button
+                    type="button"
+                    onClick={() => setRestartToken((v) => v + 1)}
+                    className="mt-2 inline-flex items-center justify-center rounded-lg bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground shadow-soft transition-transform hover:scale-[1.02] active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                  >
+                    Restart camera
+                  </button>
+                </div>
+              ) : null}
               <div className="mt-2 overflow-hidden rounded-xl border bg-muted">
                 <video ref={videoRef} className="h-auto w-full" autoPlay playsInline muted />
               </div>
