@@ -16,6 +16,8 @@ type Options = {
   selfieMode?: boolean;
   /** Smoothing factor [0..1] where higher is smoother (more lag). */
   smoothing?: number;
+  /** Change this value to force MediaPipe + camera to restart. */
+  restartToken?: number;
 };
 
 function clamp01(v: number) {
@@ -27,9 +29,11 @@ function clamp01(v: number) {
  * 0 = top of image, 1 = bottom of image.
  */
 export function useHandY(videoRef: React.RefObject<HTMLVideoElement>, opts?: Options) {
+  // IMPORTANT: don't depend on the whole `opts` object identity, otherwise React re-renders
+  // would recreate MediaPipe instances and can crash the WASM runtime.
   const options = useMemo(
     () => ({ point: "wrist", selfieMode: true, smoothing: 0.18, ...(opts ?? {}) }),
-    [opts]
+    [opts?.point, opts?.selfieMode, opts?.smoothing, opts?.restartToken]
   );
 
   const [state, setState] = useState<HandTrackingState>({ status: "idle" });
@@ -95,7 +99,13 @@ export function useHandY(videoRef: React.RefObject<HTMLVideoElement>, opts?: Opt
         // Start camera capture + feed frames into Hands
         const camera = new Camera(video, {
           onFrame: async () => {
-            await hands.send({ image: video });
+            if (cancelled) return;
+            try {
+              await hands.send({ image: video });
+            } catch {
+              // MediaPipe can throw during teardown or if the WASM runtime aborts.
+              // Avoid unhandled promise rejections.
+            }
           },
           width: 640,
           height: 480,
@@ -126,7 +136,7 @@ export function useHandY(videoRef: React.RefObject<HTMLVideoElement>, opts?: Opt
       }
       handsRef.current = null;
     };
-  }, [videoRef, options.point, options.selfieMode, options.smoothing]);
+  }, [options.point, options.selfieMode, options.smoothing, options.restartToken]);
 
   return state;
 }
