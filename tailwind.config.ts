@@ -19,6 +19,16 @@ export default {
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
+        sky: {
+          DEFAULT: "hsl(var(--sky))",
+          foreground: "hsl(var(--sky-foreground))",
+        },
+        game: {
+          ground: "hsl(var(--game-ground))",
+          pipe: "hsl(var(--game-pipe))",
+          "pipe-2": "hsl(var(--game-pipe-2))",
+          danger: "hsl(var(--game-danger))",
+        },
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
@@ -80,10 +90,25 @@ export default {
             height: "0",
           },
         },
+        floaty: {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-8px)" },
+        },
+        "pan-clouds": {
+          "0%": { transform: "translateX(0)" },
+          "100%": { transform: "translateX(-25%)" },
+        },
+        "pop-in": {
+          "0%": { transform: "translateY(10px) scale(0.98)", opacity: "0" },
+          "100%": { transform: "translateY(0) scale(1)", opacity: "1" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        floaty: "floaty 4s ease-in-out infinite",
+        "pan-clouds": "pan-clouds 18s linear infinite",
+        "pop-in": "pop-in 350ms cubic-bezier(0.2, 0.8, 0.2, 1)",
       },
     },
   },

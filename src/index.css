@@ -8,35 +8,49 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Playful "cartoon sky" theme */
+    --background: 205 75% 96%;
+    --foreground: 222 45% 12%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 222 45% 12%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 222 45% 12%;
 
-    --primary: 222.2 47.4% 11.2%;
+    --primary: 208 85% 45%;
     --primary-foreground: 210 40% 98%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 46 95% 88%;
+    --secondary-foreground: 222 45% 12%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 205 35% 92%;
+    --muted-foreground: 222 18% 35%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 14 92% 62%;
+    --accent-foreground: 210 40% 98%;
 
-    --destructive: 0 84.2% 60.2%;
+    --destructive: 0 84% 58%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 210 30% 86%;
+    --input: 210 30% 86%;
+    --ring: 208 85% 45%;
 
     --radius: 0.5rem;
+
+    /* Game tokens */
+    --sky: 204 90% 68%;
+    --sky-foreground: 222 45% 12%;
+    --game-ground: 34 70% 56%;
+    --game-pipe: 140 64% 38%;
+    --game-pipe-2: 150 60% 46%;
+    --game-danger: 0 78% 52%;
+
+    /* Effects */
+    --shadow-soft: 0 12px 30px -18px hsl(222 45% 12% / 0.35);
+    --shadow-pop: 0 18px 45px -24px hsl(var(--primary) / 0.45);
+    --noise-opacity: 0.045;
 
     --sidebar-background: 0 0% 98%;
 
@@ -56,33 +70,44 @@ All colors MUST be HSL.
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
+    --background: 222 55% 10%;
     --foreground: 210 40% 98%;
 
-    --card: 222.2 84% 4.9%;
+    --card: 222 55% 12%;
     --card-foreground: 210 40% 98%;
 
-    --popover: 222.2 84% 4.9%;
+    --popover: 222 55% 12%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary: 204 92% 70%;
+    --primary-foreground: 222 55% 10%;
 
-    --secondary: 217.2 32.6% 17.5%;
+    --secondary: 222 35% 18%;
     --secondary-foreground: 210 40% 98%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 222 30% 18%;
+    --muted-foreground: 210 18% 78%;
 
-    --accent: 217.2 32.6% 17.5%;
+    --accent: 14 92% 62%;
     --accent-foreground: 210 40% 98%;
 
-    --destructive: 0 62.8% 30.6%;
+    --destructive: 0 75% 45%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    --border: 222 25% 22%;
+    --input: 222 25% 22%;
+    --ring: 204 92% 70%;
+
+    --sky: 212 70% 42%;
+    --sky-foreground: 210 40% 98%;
+    --game-ground: 34 55% 42%;
+    --game-pipe: 140 48% 32%;
+    --game-pipe-2: 150 46% 38%;
+    --game-danger: 0 78% 55%;
+
+    --shadow-soft: 0 18px 45px -28px hsl(0 0% 0% / 0.55);
+    --shadow-pop: 0 20px 60px -32px hsl(var(--primary) / 0.35);
+    --noise-opacity: 0.03;
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
@@ -91,6 +116,34 @@ All colors MUST be HSL.
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer utilities {
+  .bg-sky-gradient {
+    background-image: radial-gradient(900px 420px at 30% 15%, hsl(var(--secondary) / 0.9), transparent 55%),
+      radial-gradient(680px 360px at 80% 25%, hsl(var(--accent) / 0.35), transparent 60%),
+      linear-gradient(180deg, hsl(var(--sky)), hsl(var(--background)) 70%);
+  }
+
+  .noise-overlay {
+    position: relative;
+  }
+  .noise-overlay::before {
+    content: "";
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='.6'/%3E%3C/svg%3E");
+    opacity: var(--noise-opacity);
+    mix-blend-mode: soft-light;
+  }
+
+  .shadow-soft {
+    box-shadow: var(--shadow-soft);
+  }
+  .shadow-pop {
+    box-shadow: var(--shadow-pop);
   }
 }
 
