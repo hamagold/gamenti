@@ -268,11 +268,11 @@ export default function FlappyPlaneGame() {
         <KurdistanBanner instituteName="پەیمانگای تەکنیکی نیشتمانی" />
         <header className="mb-4 flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
           <div>
-            <h1 className="text-balance text-3xl font-semibold tracking-tight md:text-4xl">
-              Flappy Plane — Hand Gesture Control
+            <h1 dir="rtl" className="text-balance text-3xl font-semibold tracking-tight md:text-4xl">
+              فڵاپی فڕۆکە — کۆنترۆڵ بە دەست
             </h1>
-            <p className="text-sm text-muted-foreground md:text-base">
-              Move your hand up/down in front of the camera. The plane follows your hand precisely — no gravity.
+            <p dir="rtl" className="text-sm text-muted-foreground md:text-base">
+              دەستت بەرز/نزم بکە لە پێش کامێرا. فڕۆکەکە بە وردی شوێنی دەستت دەگرێت — بەبێ گڕاڤیتی.
             </p>
           </div>
 
