@@ -6,6 +6,43 @@ type GameStatus = "ready" | "playing" | "gameover";
 
 type Difficulty = "easy" | "normal" | "hard";
 
+type ScoreEntry = {
+  name: string;
+  score: number;
+  difficulty: Difficulty;
+  at: string; // ISO
+};
+
+const SCORES_KEY = "flappy_plane_scores_v1";
+
+function loadScores(): ScoreEntry[] {
+  try {
+    const raw = localStorage.getItem(SCORES_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw) as unknown;
+    if (!Array.isArray(parsed)) return [];
+    return parsed
+      .filter((x): x is ScoreEntry =>
+        !!x &&
+        typeof (x as any).name === "string" &&
+        typeof (x as any).score === "number" &&
+        typeof (x as any).difficulty === "string" &&
+        typeof (x as any).at === "string"
+      )
+      .slice(0, 200);
+  } catch {
+    return [];
+  }
+}
+
+function saveScores(entries: ScoreEntry[]) {
+  try {
+    localStorage.setItem(SCORES_KEY, JSON.stringify(entries.slice(0, 200)));
+  } catch {
+    // ignore
+  }
+}
+
 type Obstacle = {
   id: string;
   x: number;
@@ -38,6 +75,14 @@ export default function FlappyPlaneGame() {
 
   const [status, setStatus] = useState<GameStatus>("ready");
   const [difficulty, setDifficulty] = useState<Difficulty>("normal");
+  const [playerName, setPlayerName] = useState<string>(() => {
+    try {
+      return localStorage.getItem("flappy_plane_player_name") ?? "";
+    } catch {
+      return "";
+    }
+  });
+  const [scores, setScores] = useState<ScoreEntry[]>(() => loadScores());
   const [score, setScore] = useState(0);
   const [best, setBest] = useState<number>(() => {
     try {
@@ -108,6 +153,14 @@ export default function FlappyPlaneGame() {
     }
   }, [best]);
 
+  useEffect(() => {
+    try {
+      localStorage.setItem("flappy_plane_player_name", playerName);
+    } catch {
+      // ignore
+    }
+  }, [playerName]);
+
   // Signature moment: background parallax follows plane Y
   useEffect(() => {
     const el = wrapRef.current;
@@ -129,6 +182,8 @@ export default function FlappyPlaneGame() {
   };
 
   const start = () => {
+    const trimmed = playerName.trim();
+    if (!trimmed) return;
     setScore(0);
     liveScoreRef.current = 0;
     passedRef.current = new Set();
@@ -142,6 +197,22 @@ export default function FlappyPlaneGame() {
   const endGame = () => {
     setStatus("gameover");
     setBest((b) => Math.max(b, liveScoreRef.current));
+
+    const finalScore = liveScoreRef.current;
+    const name = playerName.trim();
+    if (name) {
+      const entry: ScoreEntry = {
+        name,
+        score: finalScore,
+        difficulty,
+        at: new Date().toISOString(),
+      };
+      setScores((prev) => {
+        const next = [entry, ...prev].sort((a, b) => b.score - a.score).slice(0, 50);
+        saveScores(next);
+        return next;
+      });
+    }
   };
 
   // Map tracked Y to plane Y (strict follow; no gravity)
@@ -397,11 +468,31 @@ export default function FlappyPlaneGame() {
                   <p className="mb-4 text-sm text-muted-foreground">
                     Allow camera access, then move your hand up/down. Avoid the pipes and don’t hit the ground.
                   </p>
+
+                  <div dir="rtl" className="mb-4 text-right">
+                    <label className="mb-1 block text-xs font-semibold text-foreground">ناوی تەواو</label>
+                    <input
+                      value={playerName}
+                      onChange={(e) => setPlayerName(e.target.value)}
+                      placeholder="مثال: ئەحمد محەمەد"
+                      className="w-full rounded-xl border bg-card px-3 py-2 text-sm text-foreground shadow-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                    />
+                    {!playerName.trim() ? (
+                      <div className="mt-1 text-xs text-muted-foreground">پێویستە پێش یاری کردن ناوت بنوسیت.</div>
+                    ) : null}
+                  </div>
+
                   <div className="flex flex-col gap-2 sm:flex-row sm:justify-center">
                     <button
                       type="button"
-                      onClick={status === "gameover" ? start : start}
-                      className="inline-flex items-center justify-center rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-soft transition-transform hover:scale-[1.02] active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                      onClick={start}
+                      disabled={!playerName.trim()}
+                      className={
+                        "inline-flex items-center justify-center rounded-xl px-4 py-2 text-sm font-semibold shadow-soft transition-transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 " +
+                        (playerName.trim()
+                          ? "bg-primary text-primary-foreground hover:scale-[1.02] active:scale-[0.99]"
+                          : "bg-secondary/60 text-muted-foreground opacity-70")
+                      }
                     >
                       {status === "ready" ? "Start" : "Try again"}
                     </button>
@@ -423,7 +514,30 @@ export default function FlappyPlaneGame() {
 
           {/* Side panel */}
           <aside className="rounded-2xl border bg-card p-4 shadow-soft">
-            <h2 className="text-sm font-semibold">How it works</h2>
+            <h2 className="text-sm font-semibold">Leaderboard</h2>
+            <div className="mt-2 rounded-xl border bg-secondary/20 p-3">
+              {scores.length === 0 ? (
+                <div className="text-sm text-muted-foreground">No scores yet — be the first!</div>
+              ) : (
+                <ol className="space-y-2">
+                  {scores.slice(0, 8).map((s, idx) => (
+                    <li key={`${s.at}-${idx}`} className="flex items-center justify-between gap-3 text-sm">
+                      <div className="min-w-0">
+                        <div dir="rtl" className="truncate font-semibold text-foreground">
+                          {idx + 1}. {s.name}
+                        </div>
+                        <div className="text-xs text-muted-foreground">{s.difficulty.toUpperCase()}</div>
+                      </div>
+                      <div className="shrink-0 rounded-lg border bg-card px-2 py-1 text-xs font-semibold tabular-nums text-foreground">
+                        {s.score}
+                      </div>
+                    </li>
+                  ))}
+                </ol>
+              )}
+            </div>
+
+            <h2 className="mt-4 text-sm font-semibold">How it works</h2>
             <ul className="mt-2 space-y-2 text-sm text-muted-foreground">
               <li>
                 <span className="font-medium text-foreground">Input:</span> MediaPipe tracks your hand.
