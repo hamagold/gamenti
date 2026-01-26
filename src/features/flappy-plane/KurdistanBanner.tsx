@@ -24,22 +24,33 @@ export default function KurdistanBanner({ instituteName = "پەیمانگای ت
         </div>
 
         <div className="flex items-center justify-center md:justify-end">
-          <div className="relative">
-            <div className="absolute -inset-3 rounded-[28px] bg-secondary/40 blur-xl" />
-            <div className="relative overflow-hidden rounded-[28px] border bg-card p-3 shadow-pop">
+          <div className="flex items-center gap-3">
+            <GlowCard>
+              <KurdistanFlagMark size="xl" />
+            </GlowCard>
+            <GlowCard>
               <img
                 src={ntiLogo}
                 alt="National Technical Institute logo"
                 loading="lazy"
                 className="h-24 w-24 rounded-2xl object-contain md:h-28 md:w-28"
               />
-            </div>
+            </GlowCard>
           </div>
         </div>
       </div>
       <div className="border-t bg-secondary/20 px-5 py-3 text-xs text-muted-foreground md:px-6">
         Tip: Keep your wrist/palm fully in frame for smoother control.
       </div>
+    </div>
+  );
+}
+
+function GlowCard({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="relative">
+      <div className="absolute -inset-3 rounded-[28px] bg-secondary/40 blur-xl" />
+      <div className="relative overflow-hidden rounded-[28px] border bg-card p-3 shadow-pop">{children}</div>
     </div>
   );
 }
@@ -58,8 +69,13 @@ function GameNameBadge() {
   );
 }
 
-function KurdistanFlagMark({ size }: { size: "sm" | "lg" }) {
-  const cls = size === "lg" ? "h-12 w-[92px] rounded-2xl" : "h-10 w-16 rounded-xl";
+function KurdistanFlagMark({ size }: { size: "sm" | "lg" | "xl" }) {
+  const cls =
+    size === "xl"
+      ? "h-24 w-24 rounded-2xl md:h-28 md:w-28"
+      : size === "lg"
+        ? "h-12 w-[92px] rounded-2xl"
+        : "h-10 w-16 rounded-xl";
   return (
     <div className={`shadow-soft relative overflow-hidden border ${cls}`}>
       <img
