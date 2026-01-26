@@ -2,34 +2,52 @@ type Props = {
   instituteName?: string;
 };
 
+import ntiLogo from "@/assets/nti-logo.jpg";
+
 export default function KurdistanBanner({ instituteName = "پەیمانگای تەکنیکی نیشتمانی" }: Props) {
   return (
-    <div className="mb-4 flex flex-col gap-3 rounded-2xl border bg-card/70 p-4 shadow-soft backdrop-blur md:flex-row md:items-center md:justify-between">
-      <div className="flex items-center gap-3">
-        <div className="flex items-center gap-2">
-          <KurdistanFlagMark />
-          <InstituteLogoMark />
+    <div className="mb-4 overflow-hidden rounded-3xl border bg-card/70 shadow-pop backdrop-blur">
+      <div className="grid gap-5 p-5 md:grid-cols-[1.2fr_0.8fr] md:items-center md:p-6">
+        <div className="flex items-center gap-4">
+          <KurdistanFlagMark size="lg" />
+          <div className="leading-tight">
+            <div className="text-sm font-semibold tracking-tight">Flappy Plane</div>
+            <div dir="rtl" className="text-xl font-semibold tracking-tight md:text-2xl">
+              {instituteName}
+            </div>
+            <div className="mt-2 flex flex-wrap items-center gap-2">
+              <Pill>Move hand up/down</Pill>
+              <Pill>Precise (no gravity)</Pill>
+              <Pill>Avoid pipes & ground</Pill>
+            </div>
+          </div>
         </div>
-        <div className="leading-tight">
-          <div className="text-sm font-semibold tracking-tight">Flappy Plane</div>
-          <div dir="rtl" className="text-base font-semibold">
-            {instituteName}
+
+        <div className="flex items-center justify-center md:justify-end">
+          <div className="relative">
+            <div className="absolute -inset-3 rounded-[28px] bg-secondary/40 blur-xl" />
+            <div className="relative overflow-hidden rounded-[28px] border bg-card p-3 shadow-pop">
+              <img
+                src={ntiLogo}
+                alt="National Technical Institute logo"
+                loading="lazy"
+                className="h-24 w-24 rounded-2xl object-contain md:h-28 md:w-28"
+              />
+            </div>
           </div>
         </div>
       </div>
-
-      <div className="flex items-center justify-between gap-2 rounded-xl border bg-secondary/40 px-3 py-2 text-xs text-muted-foreground md:justify-end">
-        <span>Move hand up/down to fly</span>
-        <span className="hidden md:inline">•</span>
-        <span className="hidden md:inline">Avoid pipes & ground</span>
+      <div className="border-t bg-secondary/20 px-5 py-3 text-xs text-muted-foreground md:px-6">
+        Tip: Keep your wrist/palm fully in frame for smoother control.
       </div>
     </div>
   );
 }
 
-function KurdistanFlagMark() {
+function KurdistanFlagMark({ size }: { size: "sm" | "lg" }) {
+  const cls = size === "lg" ? "h-12 w-[92px] rounded-2xl" : "h-10 w-16 rounded-xl";
   return (
-    <div className="shadow-soft relative h-10 w-16 overflow-hidden rounded-xl border">
+    <div className={`shadow-soft relative overflow-hidden border ${cls}`}>
       <div className="absolute inset-x-0 top-0 h-1/3 bg-flag-red" />
       <div className="absolute inset-x-0 top-1/3 h-1/3 bg-flag-white" />
       <div className="absolute inset-x-0 bottom-0 h-1/3 bg-flag-green" />
@@ -38,46 +56,11 @@ function KurdistanFlagMark() {
   );
 }
 
-function InstituteLogoMark() {
-  // Simple, token-based mark inspired by the NTI emblem (gear ring + pen nib).
-  // Uses only CSS variables/tokens so it matches the theme.
+function Pill({ children }: { children: React.ReactNode }) {
   return (
-    <div className="shadow-soft relative grid h-10 w-10 place-items-center overflow-hidden rounded-xl border bg-card">
-      <svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true">
-        {/* gear ring */}
-        <g fill="none" stroke="hsl(var(--primary))" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <circle cx="15" cy="15" r="10.5" opacity="0.95" />
-          {Array.from({ length: 10 }).map((_, i) => {
-            const a = (i * 360) / 10;
-            return (
-              <path
-                key={i}
-                d="M15 1.6 V4.0"
-                transform={`rotate(${a} 15 15)`}
-                opacity="0.8"
-              />
-            );
-          })}
-        </g>
-
-        {/* inner circle */}
-        <circle cx="15" cy="15" r="6.2" fill="hsl(var(--secondary))" stroke="hsl(var(--border))" strokeWidth="1" />
-
-        {/* pen nib */}
-        <path
-          d="M15 8.5 L19.2 14.2 L15 22 L10.8 14.2 Z"
-          fill="hsl(var(--accent))"
-          stroke="hsl(var(--foreground) / 0.15)"
-          strokeWidth="1"
-        />
-        <path
-          d="M15 12.2 L16.4 14.6 L15 17.2 L13.6 14.6 Z"
-          fill="hsl(var(--card))"
-          opacity="0.9"
-        />
-        <circle cx="15" cy="18.2" r="0.9" fill="hsl(var(--foreground) / 0.35)" />
-      </svg>
-    </div>
+    <span className="rounded-full border bg-secondary/40 px-3 py-1 text-[11px] font-semibold text-foreground shadow-soft">
+      {children}
+    </span>
   );
 }
 
