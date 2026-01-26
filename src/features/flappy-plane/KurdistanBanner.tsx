@@ -7,42 +7,57 @@ import kurdistanFlag from "@/assets/kurdistan-flag.gif";
 
 export default function KurdistanBanner({ instituteName = "پەیمانگای تەکنیکی نیشتمانی" }: Props) {
   return (
-    <div className="mb-4 overflow-hidden rounded-3xl border bg-card/70 shadow-pop backdrop-blur">
-      <div className="grid gap-5 p-5 md:grid-cols-[1.2fr_0.8fr] md:items-center md:p-6">
-        <div className="flex items-center gap-4">
-          <div className="leading-tight">
-            <GameNameBadge />
-            <div dir="rtl" className="text-xl font-semibold tracking-tight md:text-2xl">
-              {instituteName}
+    <div dir="rtl" className="mb-4 overflow-hidden rounded-3xl border bg-card/70 shadow-pop backdrop-blur">
+      <div className="grid gap-4 p-5 md:grid-cols-[1fr_auto] md:items-center md:gap-6 md:p-6">
+        {/* Text / title */}
+        <div className="min-w-0">
+          <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+              <GameNameBadge />
+              {/* badges on mobile move below automatically */}
+              <div className="flex items-center justify-start gap-3 md:hidden">
+                <HeaderBadges />
+              </div>
             </div>
-            <div className="mt-2 flex flex-wrap items-center gap-2">
-              <Pill>Move hand up/down</Pill>
-              <Pill>Precise (no gravity)</Pill>
-              <Pill>Avoid pipes & ground</Pill>
+
+            <div className="text-xl font-semibold tracking-tight md:text-2xl">{instituteName}</div>
+
+            <div className="flex flex-wrap items-center gap-2">
+              <Pill>دەستت بەرز/نزم بکە</Pill>
+              <Pill>کۆنترۆڵی ورد (بەبێ گڕاڤیتی)</Pill>
+              <Pill>دووربە لە پایپ و زەوی</Pill>
             </div>
           </div>
         </div>
 
-        <div className="flex items-center justify-center md:justify-end">
-          <div className="flex items-center gap-3">
-            <GlowCard>
-              <KurdistanFlagMark size="xl" />
-            </GlowCard>
-            <GlowCard>
-              <img
-                src={ntiLogo}
-                alt="National Technical Institute logo"
-                loading="lazy"
-                className="h-24 w-24 rounded-2xl object-contain md:h-28 md:w-28"
-              />
-            </GlowCard>
-          </div>
+        {/* Right side badges (desktop) */}
+        <div className="hidden items-center justify-end gap-3 md:flex">
+          <HeaderBadges />
         </div>
       </div>
+
       <div className="border-t bg-secondary/20 px-5 py-3 text-xs text-muted-foreground md:px-6">
-        Tip: Keep your wrist/palm fully in frame for smoother control.
+        ئامۆژگاری: دەست/قۆڵت تەواو لە ناو فریمدا بهێڵە بۆ کۆنترۆڵی هێواشتر.
       </div>
     </div>
+  );
+}
+
+function HeaderBadges() {
+  return (
+    <>
+      <GlowCard>
+        <KurdistanFlagMark size="xl" />
+      </GlowCard>
+      <GlowCard>
+        <img
+          src={ntiLogo}
+          alt="National Technical Institute logo"
+          loading="lazy"
+          className="h-24 w-24 rounded-2xl object-contain md:h-28 md:w-28"
+        />
+      </GlowCard>
+    </>
   );
 }
 
@@ -57,11 +72,11 @@ function GlowCard({ children }: { children: React.ReactNode }) {
 
 function GameNameBadge() {
   return (
-    <div className="mb-2 inline-flex items-center gap-2 rounded-2xl border bg-secondary/40 px-3 py-2 shadow-soft">
+    <div className="inline-flex items-center gap-2 rounded-2xl border bg-secondary/40 px-3 py-2 shadow-soft">
       <TowerMark side="left" />
       <KurdistanFlagMark size="sm" />
       <div className="relative">
-        <div className="text-sm font-extrabold tracking-tight text-flag-green md:text-base">Flappy Plane</div>
+        <div className="text-sm font-extrabold tracking-tight text-flag-green md:text-base">فڵاپی فڕۆکە</div>
         <div className="absolute -bottom-1 left-0 right-0 h-1 rounded-full bg-flag-green/35" />
       </div>
       <TowerMark side="right" />
