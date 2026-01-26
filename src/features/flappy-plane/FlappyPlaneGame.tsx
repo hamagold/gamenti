@@ -320,6 +320,9 @@ export default function FlappyPlaneGame() {
               "--parallax": 0,
             }}
           >
+            {/* Sun watermark */}
+            <SunWatermark reducedMotion={reducedMotion} />
+
             {/* Parallax clouds */}
             <div
               className={
@@ -454,6 +457,53 @@ export default function FlappyPlaneGame() {
           </aside>
         </div>
       </div>
+    </div>
+  );
+}
+
+function SunWatermark({ reducedMotion }: { reducedMotion: boolean }) {
+  const rays = 21;
+  return (
+    <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+      <svg
+        className={reducedMotion ? "opacity-12" : "animate-sun-drift"}
+        width="320"
+        height="320"
+        viewBox="0 0 100 100"
+        aria-hidden="true"
+      >
+        <defs>
+          <radialGradient id="sunGradient" cx="50%" cy="50%">
+            <stop offset="0%" stopColor="hsl(var(--flag-sun))" stopOpacity="0.55" />
+            <stop offset="60%" stopColor="hsl(var(--flag-sun))" stopOpacity="0.3" />
+            <stop offset="100%" stopColor="hsl(var(--flag-sun))" stopOpacity="0" />
+          </radialGradient>
+        </defs>
+
+        {/* rays */}
+        <g transform="translate(50 50)">
+          {Array.from({ length: rays }).map((_, i) => {
+            const angle = (i * 360) / rays;
+            return (
+              <rect
+                key={i}
+                x={-1.8}
+                y={-38}
+                width={3.6}
+                height={18}
+                rx={1.8}
+                transform={`rotate(${angle})`}
+                fill="hsl(var(--flag-sun))"
+                opacity="0.45"
+              />
+            );
+          })}
+        </g>
+
+        {/* inner core */}
+        <circle cx="50" cy="50" r="24" fill="url(#sunGradient)" />
+        <circle cx="50" cy="50" r="16" fill="hsl(var(--flag-sun))" opacity="0.35" />
+      </svg>
     </div>
   );
 }
