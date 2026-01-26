@@ -313,7 +313,7 @@ export default function FlappyPlaneGame() {
         <div className="grid gap-4 md:grid-cols-[1fr_320px]">
           <div
             ref={wrapRef}
-            className="noise-overlay relative aspect-[16/10] w-full overflow-hidden rounded-2xl border bg-sky-gradient shadow-pop"
+            className="noise-overlay relative aspect-[16/10] w-full overflow-hidden rounded-2xl border bg-kurdistan-sky shadow-pop"
             style={{
               // used by parallax layers
               // @ts-expect-error CSS var
