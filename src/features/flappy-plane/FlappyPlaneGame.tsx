@@ -595,20 +595,102 @@ function Pipe({ cap }: { cap: "top" | "bottom" }) {
 
 function PlaneSprite({ floating, reducedMotion }: { floating: boolean; reducedMotion: boolean }) {
   return (
-    <div className={"relative h-[30px] w-[52px] " + (floating && !reducedMotion ? "animate-floaty" : "")}
-      style={{ filter: "drop-shadow(0 10px 18px hsl(var(--foreground) / 0.18))" }}>
-      {/* body */}
-      <div className="absolute inset-y-[5px] left-[6px] right-[2px] rounded-full border bg-secondary" />
-      {/* nose */}
-      <div className="absolute right-0 top-[8px] h-[14px] w-[14px] rounded-full border bg-accent" />
-      {/* cockpit */}
-      <div className="absolute left-[18px] top-[6px] h-[10px] w-[18px] rounded-full border bg-card" />
-      {/* wing */}
-      <div className="absolute left-[18px] top-[16px] h-[10px] w-[22px] -skew-x-12 rounded-lg border bg-primary" />
-      {/* tail */}
-      <div className="absolute left-[2px] top-[10px] h-[10px] w-[10px] rounded-lg border bg-primary" />
-      {/* propeller */}
-      <div className="absolute right-[10px] top-[14px] h-[2px] w-[10px] rounded-full bg-foreground/30" />
+    <div
+      className={
+        "relative h-[30px] w-[52px] " + (floating && !reducedMotion ? "animate-floaty" : "")
+      }
+      style={{ filter: "drop-shadow(0 12px 18px hsl(var(--foreground) / 0.18))" }}
+    >
+      {/* Cartoon plane as SVG for cleaner shapes */}
+      <svg className="absolute inset-0" viewBox="0 0 52 30" aria-hidden="true">
+        <defs>
+          <linearGradient id="planeBody" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stopColor="hsl(var(--secondary))" />
+            <stop offset="1" stopColor="hsl(var(--card))" />
+          </linearGradient>
+          <linearGradient id="planeWing" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stopColor="hsl(var(--primary))" />
+            <stop offset="1" stopColor="hsl(var(--primary) / 0.65)" />
+          </linearGradient>
+        </defs>
+
+        {/* fuselage */}
+        <path
+          d="M9 18c-3.3 0-6-2-6-4.6C3 10.9 5.7 9 9 9h20c4.1 0 7.7 1.8 10.7 4.2l5.3 4.3c1.1.9.5 2.5-.9 2.5H29L14.8 21c-1.8-.6-3.7-1-5.8-1Z"
+          fill="url(#planeBody)"
+          stroke="hsl(var(--foreground) / 0.22)"
+          strokeWidth="1.2"
+          strokeLinejoin="round"
+        />
+
+        {/* nose */}
+        <path
+          d="M45 17.8 39.4 13c-.7-.6-.2-1.8.7-1.8h4.6c1.7 0 3 1.3 3 3 0 1.3-.9 2.4-2.1 2.7Z"
+          fill="hsl(var(--accent))"
+          stroke="hsl(var(--foreground) / 0.22)"
+          strokeWidth="1.2"
+          strokeLinejoin="round"
+        />
+
+        {/* cockpit */}
+        <path
+          d="M22 10.3c0-1.5 1.2-2.7 2.7-2.7h6.8c1.5 0 2.7 1.2 2.7 2.7v2.5c0 1.5-1.2 2.7-2.7 2.7h-6.8c-1.5 0-2.7-1.2-2.7-2.7v-2.5Z"
+          fill="hsl(var(--card) / 0.95)"
+          stroke="hsl(var(--foreground) / 0.16)"
+          strokeWidth="1.1"
+        />
+        <path
+          d="M24.2 9.8h7.7c.8 0 1.4.6 1.4 1.4v.8"
+          fill="none"
+          stroke="hsl(var(--primary) / 0.25)"
+          strokeWidth="1.2"
+          strokeLinecap="round"
+        />
+
+        {/* wing */}
+        <path
+          d="M20 16.8 34 16c1.2-.1 2.2.8 2.2 2v.2c0 1.3-1.1 2.3-2.4 2.2l-13.3-1c-1.7-.1-3-1.5-3-3.2v-.1c0-.8.7-1.4 1.5-1.4Z"
+          fill="url(#planeWing)"
+          stroke="hsl(var(--foreground) / 0.18)"
+          strokeWidth="1.1"
+          strokeLinejoin="round"
+        />
+
+        {/* tail fin */}
+        <path
+          d="M10.5 9.3 16 6.7c.9-.4 1.9.2 1.9 1.2v3.6c0 1-.9 1.7-1.9 1.3l-5.5-2.1c-.6-.2-.8-.9-.5-1.4Z"
+          fill="hsl(var(--primary))"
+          stroke="hsl(var(--foreground) / 0.18)"
+          strokeWidth="1.1"
+          strokeLinejoin="round"
+        />
+
+        {/* engine ring */}
+        <circle cx="40.3" cy="13.7" r="3.2" fill="hsl(var(--secondary) / 0.6)" stroke="hsl(var(--foreground) / 0.18)" strokeWidth="1" />
+      </svg>
+
+      {/* propeller (CSS animated) */}
+      <div
+        className={
+          "absolute right-[5px] top-[9px] h-[12px] w-[12px] rounded-full border bg-card shadow-soft " +
+          (reducedMotion ? "" : "")
+        }
+      >
+        <div
+          className={
+            "absolute left-1/2 top-1/2 h-[2px] w-[16px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-foreground/30 " +
+            (reducedMotion ? "" : "animate-[spin_700ms_linear_infinite]")
+          }
+        />
+      </div>
+
+      {/* Kurdistan flag mini-label on top */}
+      <div className="absolute left-[18px] top-[-6px] h-[10px] w-[20px] overflow-hidden rounded-md border bg-card shadow-soft">
+        <div className="absolute inset-x-0 top-0 h-1/3 bg-flag-red" />
+        <div className="absolute inset-x-0 top-1/3 h-1/3 bg-flag-white" />
+        <div className="absolute inset-x-0 bottom-0 h-1/3 bg-flag-green" />
+        <div className="absolute left-1/2 top-1/2 h-[4px] w-[4px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-flag-sun/80" />
+      </div>
     </div>
   );
 }
