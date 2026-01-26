@@ -29,6 +29,12 @@ export default {
           "pipe-2": "hsl(var(--game-pipe-2))",
           danger: "hsl(var(--game-danger))",
         },
+        flag: {
+          red: "hsl(var(--flag-red))",
+          white: "hsl(var(--flag-white))",
+          green: "hsl(var(--flag-green))",
+          sun: "hsl(var(--flag-sun))",
+        },
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useHandY } from "./useHandY";
+import KurdistanBanner from "./KurdistanBanner";
 
 type GameStatus = "ready" | "playing" | "gameover";
 
@@ -248,6 +249,7 @@ export default function FlappyPlaneGame() {
   return (
     <div className="w-full">
       <div className="mx-auto w-full max-w-5xl">
+        <KurdistanBanner instituteName="پەیمانگای تەکنیکی نیشتمانی" />
         <header className="mb-4 flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
           <div>
             <h1 className="text-balance text-3xl font-semibold tracking-tight md:text-4xl">
