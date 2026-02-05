@@ -381,6 +381,12 @@ export default function FlappyPlaneGame() {
     }
   }, [tracking, status]);
 
+  // Store settings in a ref to avoid restarting game loop when settings object changes
+  const settingsRef = useRef(settings);
+  useEffect(() => {
+    settingsRef.current = settings;
+  }, [settings]);
+
   // Main game loop
   useEffect(() => {
     if (status !== "playing") {
@@ -389,6 +395,9 @@ export default function FlappyPlaneGame() {
       return;
     }
 
+    // Reset the last time when starting to avoid huge dt on first frame
+    lastTRef.current = performance.now();
+
     const tick = (t: number) => {
       const wrap = wrapRef.current;
       if (!wrap) {
@@ -396,50 +405,65 @@ export default function FlappyPlaneGame() {
         return;
       }
 
-      const dt = Math.min(0.033, (t - lastTRef.current) / 1000);
+      const currentSettings = settingsRef.current;
+      
+      // Calculate delta time, cap at 100ms to handle tab switching gracefully
+      const rawDt = (t - lastTRef.current) / 1000;
+      const dt = Math.min(0.1, rawDt);
       lastTRef.current = t;
+
+      // Skip frame if dt is too small or zero (prevents glitches)
+      if (dt <= 0.001) {
+        rafRef.current = requestAnimationFrame(tick);
+        return;
+      }
 
       const rect = wrap.getBoundingClientRect();
       const W = rect.width;
       const H = rect.height;
-      const groundTop = H - settings.groundH;
+      
+      // Skip if dimensions are invalid
+      if (W <= 0 || H <= 0) {
+        rafRef.current = requestAnimationFrame(tick);
+        return;
+      }
+      
+      const groundTop = H - currentSettings.groundH;
 
       // Spawn obstacles
       spawnAccRef.current += dt;
-      if (spawnAccRef.current >= settings.spawnEvery) {
+      if (spawnAccRef.current >= currentSettings.spawnEvery) {
         spawnAccRef.current = 0;
 
         // Dynamic difficulty (Hard): reduce gap as score increases, down to a safe minimum.
-        const baseGapH = settings.gapH;
+        const baseGapH = currentSettings.gapH;
         const dynamicGapH =
           difficulty === "hard"
             ? clamp(baseGapH - liveScoreRef.current * 2.2, 108, baseGapH)
             : baseGapH;
 
-        const margin = settings.paddingTop;
-        const maxY = Math.max(margin, groundTop - dynamicGapH - settings.paddingBottom);
+        const margin = currentSettings.paddingTop;
+        const maxY = Math.max(margin, groundTop - dynamicGapH - currentSettings.paddingBottom);
         const gapY = clamp(
           margin + Math.random() * (maxY - margin),
           margin,
-          groundTop - dynamicGapH - settings.paddingBottom
+          groundTop - dynamicGapH - currentSettings.paddingBottom
         );
 
         const next: Obstacle = {
           id: uid(),
           x: W + 40,
-          width: settings.obstacleW,
+          width: currentSettings.obstacleW,
           gapY,
           gapH: dynamicGapH,
         };
 
-        const updated = [...obstaclesRef.current, next];
-        obstaclesRef.current = updated;
-        setObstacles(updated);
+        obstaclesRef.current = [...obstaclesRef.current, next];
       }
 
-      // Move obstacles
+      // Move obstacles - use current ref to avoid stale data
       const moved = obstaclesRef.current
-        .map((o) => ({ ...o, x: o.x - settings.obstacleSpeed * dt }))
+        .map((o) => ({ ...o, x: o.x - currentSettings.obstacleSpeed * dt }))
         .filter((o) => o.x + o.width > -40);
 
       // Score: pass obstacle once
@@ -453,9 +477,9 @@ export default function FlappyPlaneGame() {
       }
 
       // Collision
-      const planePxY = clamp(planeYRef.current, 0, 1) * (groundTop - settings.planeH);
-      const planeRect = { x: planeX, y: planePxY, w: settings.planeW, h: settings.planeH };
-      const groundRect = { x: 0, y: groundTop, w: W, h: settings.groundH };
+      const planePxY = clamp(planeYRef.current, 0, 1) * (groundTop - currentSettings.planeH);
+      const planeRect = { x: planeX, y: planePxY, w: currentSettings.planeW, h: currentSettings.planeH };
+      const groundRect = { x: 0, y: groundTop, w: W, h: currentSettings.groundH };
 
       if (intersects(planeRect, groundRect)) {
         endGame();
@@ -472,7 +496,7 @@ export default function FlappyPlaneGame() {
       }
 
       obstaclesRef.current = moved;
-      setObstacles(moved);
+      setObstacles([...moved]); // Create new array to ensure React updates
 
       // Keep signature parallax responsive (cheap)
       const parallax = (planeYRef.current - 0.5) * 18;
@@ -486,7 +510,7 @@ export default function FlappyPlaneGame() {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
       rafRef.current = null;
     };
-  }, [status, settings]);
+  }, [status, difficulty]);
 
   const reducedMotion = useMemo(() => prefersReducedMotion(), []);
 
