@@ -329,16 +329,41 @@ export default function FlappyPlaneGame() {
     setBest((b) => Math.max(b, liveScoreRef.current));
 
     const finalScore = liveScoreRef.current;
-    const name = playerName.trim();
+    const name = playerName.trim().toLowerCase();
     if (name) {
-      const entry: ScoreEntry = {
-        name,
-        score: finalScore,
-        difficulty,
-        at: new Date().toISOString(),
-      };
       setScores((prev) => {
-        const next = [entry, ...prev].sort((a, b) => b.score - a.score).slice(0, 50);
+        // Check if player already exists (case-insensitive name match + same difficulty)
+        const existingIdx = prev.findIndex(
+          (s) => s.name.toLowerCase() === name && s.difficulty === difficulty
+        );
+
+        let next: ScoreEntry[];
+        if (existingIdx !== -1) {
+          // Player exists - only update if new score is higher
+          if (finalScore > prev[existingIdx].score) {
+            next = [...prev];
+            next[existingIdx] = {
+              name: playerName.trim(), // Keep original casing
+              score: finalScore,
+              difficulty,
+              at: new Date().toISOString(),
+            };
+          } else {
+            // Score not higher, keep existing
+            return prev;
+          }
+        } else {
+          // New player - add entry
+          const entry: ScoreEntry = {
+            name: playerName.trim(),
+            score: finalScore,
+            difficulty,
+            at: new Date().toISOString(),
+          };
+          next = [entry, ...prev];
+        }
+
+        next = next.sort((a, b) => b.score - a.score).slice(0, 50);
         saveScores(next);
         return next;
       });
