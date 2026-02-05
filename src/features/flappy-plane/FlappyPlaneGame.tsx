@@ -728,24 +728,38 @@ export default function FlappyPlaneGame() {
 
             <div dir="rtl" className="mt-4 rounded-xl border bg-secondary/40 p-3">
               <div className="text-xs font-semibold text-foreground">{t.madeByTitle}</div>
-              <p className="mt-1 text-xs text-muted-foreground">
-                {t.madeByPrefix}
-                <span className="whitespace-nowrap">١ </span>
-                <a
-                  href="https://www.instagram.com/hama_linux/"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="font-semibold text-primary underline underline-offset-2"
-                >
-                  محمد سلیمان احمد
-                </a>
-                <span className="text-muted-foreground"> </span>
-                <span className="whitespace-nowrap">٢ </span>
-                <span className="font-semibold text-foreground">عبدالقادر طارق کریم</span>
-                <span className="text-muted-foreground"> </span>
-                <span className="whitespace-nowrap">٣ </span>
-                <span className="font-semibold text-foreground">ابراهیم حسین</span>
-              </p>
+              
+              {/* Supervisor */}
+              <div className="mt-2 text-xs text-muted-foreground">
+                <span className="font-medium text-foreground">مامۆستای سەرپەرشتار: </span>
+                <span className="font-semibold text-foreground">احمد هێرش عمر</span>
+              </div>
+              
+              {/* Students */}
+              <div className="mt-2 text-xs text-muted-foreground">
+                <span className="font-medium text-foreground">قوتابیان:</span>
+              </div>
+              <ol className="mt-1 space-y-0.5 text-xs">
+                <li className="flex items-center gap-1">
+                  <span className="text-muted-foreground">١.</span>
+                  <a
+                    href="https://www.instagram.com/hama_linux/"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="font-semibold text-primary underline underline-offset-2"
+                  >
+                    محمد سلیمان احمد
+                  </a>
+                </li>
+                <li className="flex items-center gap-1">
+                  <span className="text-muted-foreground">٢.</span>
+                  <span className="font-semibold text-foreground">عبدالقادر طارق کریم</span>
+                </li>
+                <li className="flex items-center gap-1">
+                  <span className="text-muted-foreground">٣.</span>
+                  <span className="font-semibold text-foreground">ابراهیم حسین</span>
+                </li>
+              </ol>
             </div>
 
             {/* Hidden video element used by MediaPipe */}
