@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useHandY } from "./useHandY";
+import HandOverlay from "./HandOverlay";
 import KurdistanBanner from "./KurdistanBanner";
 import {
   AlertDialog,
@@ -803,8 +804,9 @@ export default function FlappyPlaneGame() {
                   </button>
                 </div>
               ) : null}
-              <div className="mt-2 overflow-hidden rounded-xl border bg-muted">
+              <div className="relative mt-2 overflow-hidden rounded-xl border bg-muted">
                 <video ref={videoRef} className="h-auto w-full" autoPlay playsInline muted />
+                <HandOverlay landmarks={tracking.landmarks} videoRef={videoRef} />
               </div>
               <div className="mt-2 text-xs text-muted-foreground">
                 {t.coverPreview}

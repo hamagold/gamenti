@@ -1,13 +1,15 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Hands, type Results } from "@mediapipe/hands";
+import { Hands, type Results, HAND_CONNECTIONS } from "@mediapipe/hands";
 import { Camera } from "@mediapipe/camera_utils";
 
+export type Landmark = { x: number; y: number; z: number };
+
 export type HandTrackingState =
-  | { status: "idle" }
-  | { status: "starting" }
-  | { status: "running"; y: number; confidence: number }
-  | { status: "no_hand"; lastY: number }
-  | { status: "error"; message: string };
+  | { status: "idle"; landmarks?: undefined }
+  | { status: "starting"; landmarks?: undefined }
+  | { status: "running"; y: number; confidence: number; landmarks: Landmark[] }
+  | { status: "no_hand"; lastY: number; landmarks?: undefined }
+  | { status: "error"; message: string; landmarks?: undefined };
 
 type Options = {
   /** Prefer wrist landmark (0) or palm/hand center (averaged). */
@@ -23,6 +25,9 @@ type Options = {
 function clamp01(v: number) {
   return Math.min(1, Math.max(0, v));
 }
+
+// Export HAND_CONNECTIONS for drawing
+export { HAND_CONNECTIONS };
 
 /**
  * Tracks the hand Y position (0..1) from the camera feed using MediaPipe Hands.
@@ -89,7 +94,11 @@ export function useHandY(videoRef: React.RefObject<HTMLVideoElement>, opts?: Opt
       // MediaPipe doesn't expose a per-frame confidence for Hands results consistently;
       // approximate confidence by presence of landmarks.
       const confidence = 1;
-      setState({ status: "running", y: clamped, confidence });
+      
+      // Convert landmarks to simple array
+      const landmarks: Landmark[] = lm.map((l) => ({ x: l.x, y: l.y, z: l.z }));
+      
+      setState({ status: "running", y: clamped, confidence, landmarks });
     };
 
     hands.onResults(onResults);
